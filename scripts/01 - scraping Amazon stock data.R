@@ -6,6 +6,9 @@ library(here)
 setwd(here::here())
 library(rstudioapi)
 
+# Claim API key for access to stock data
+browseURL("https://www.alphavantage.co/support/#api-key")
+
 # Set API key and request URL
 api_key <- rstudioapi::askForPassword()
 request_url <- str_c("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=",
