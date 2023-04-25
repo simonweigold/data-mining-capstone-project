@@ -5,6 +5,7 @@ library(httr)
 library(here)
 setwd(here::here())
 library(rstudioapi)
+library(lubridate)
 
 # Claim API key for access to stock data
 browseURL("https://www.alphavantage.co/support/#api-key")
@@ -29,6 +30,11 @@ for (i in 1:length(close_data)) {
 }
 
 # Convert to data frame
-amzn <- t(rbind(date, close_data))
+matrix <- matrix(nrow = length(date), ncol = 2, byrow = T)
+for (j in 1:length(date)) {
+  matrix[j,] <- c(date[[j]],
+                  close_data[[j]])
+}
+amzn <- as.data.frame(matrix)
 
 
