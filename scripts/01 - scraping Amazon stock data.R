@@ -37,4 +37,10 @@ for (j in 1:length(date)) {
 }
 amzn <- as.data.frame(matrix)
 
+# Enhance data frame
+colnames(amzn) <- c("date", "close_data")
+amzn$date <- as.Date(amzn$date)
+amzn$close_data <- as.integer(amzn$close_data)
 
+# Save as csv
+write.csv(amzn, here::here(data, "amzn.csv"))
