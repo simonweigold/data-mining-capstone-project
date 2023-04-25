@@ -43,4 +43,4 @@ amzn$date <- as.Date(amzn$date)
 amzn$close_data <- as.integer(amzn$close_data)
 
 # Save as csv
-write.csv(amzn, here::here("data", "amzn.csv"))
+write.csv(amzn, here::here("amzn.csv"))
