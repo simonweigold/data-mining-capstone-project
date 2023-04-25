@@ -25,4 +25,5 @@ for (i in 1:length(close_data)) {
   date[i] <- names(amzn_content$`Time Series (Daily)`[i])
 }
 
-
+# Convert to data frame
+amzn <- as.data.frame(t(rbind(date, close_data)))
