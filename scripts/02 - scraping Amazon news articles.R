@@ -27,3 +27,6 @@ ga_clean <- guardian_amazon %>%
 
 # Introduce NAs
 ga_clean$body_text[ga_clean$body_text == ""] <- "NA"
+
+# Save clean data
+write.csv(ga_clean, here::here("ga_clean.csv"))
