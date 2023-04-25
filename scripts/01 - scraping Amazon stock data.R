@@ -17,4 +17,12 @@ request_url <- str_c("https://www.alphavantage.co/query?function=TIME_SERIES_DAI
 amzn_get <- httr::GET(request_url)
 amzn_content <- httr::content(amzn_json)
 
+# Extract data
+close_data <- vector(mode = "list", length = length(amzn_content$`Time Series (Daily)`))
+date <- vector(mode = "list", length = length(amzn_content$`Time Series (Daily)`))
+for (i in 1:length(close_data)) {
+  close_data[i] <- amzn_content$`Time Series (Daily)`[[i]]$`4. close`
+  date[i] <- names(amzn_content$`Time Series (Daily)`[i])
+}
+
 
