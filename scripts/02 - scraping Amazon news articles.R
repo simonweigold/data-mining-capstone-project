@@ -1,6 +1,7 @@
 library(tidyverse)
 library(here)
 library(guardianapi)
+library(rio)
 
 # Load API key
 gu_api_key()
@@ -14,3 +15,4 @@ api_request <- gu_content(query = "amazon",
 df <- api_request %>% select(-tags)
 df <- as.data.frame(df)
 write.csv(df, here::here("guardian_amazon.csv"))
+
