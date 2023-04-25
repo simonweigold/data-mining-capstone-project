@@ -13,3 +13,6 @@ request_url <- str_c("https://www.alphavantage.co/query?function=TIME_SERIES_DAI
                      "&outputsize=full&apikey=",
                      api_key)
 
+# Request data from API
+amzn_json <- httr::GET(request_url)
+
