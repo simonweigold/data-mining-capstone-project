@@ -3,6 +3,7 @@ library(here)
 library(guardianapi)
 library(rio)
 
+# Data retrieval----
 # Load API key
 gu_api_key()
 
@@ -16,3 +17,5 @@ df <- api_request %>% select(-tags)
 df <- as.data.frame(df)
 write.csv(df, here::here("guardian_amazon.csv"))
 
+# Data pre-processing----
+# When already saved, import data
