@@ -19,7 +19,7 @@ request_url <- str_c("https://www.alphavantage.co/query?function=TIME_SERIES_DAI
 
 # Request data from API
 amzn_get <- httr::GET(request_url)
-amzn_content <- httr::content(amzn_json)
+amzn_content <- httr::content(amzn_get)
 
 # Extract data
 close_data <- vector(mode = "list", length = length(amzn_content$`Time Series (Daily)`))
@@ -43,4 +43,4 @@ amzn$date <- as.Date(amzn$date)
 amzn$close_data <- as.integer(amzn$close_data)
 
 # Save as csv
-write.csv(amzn, here::here(data, "amzn.csv"))
+write.csv(amzn, here::here("data", "amzn.csv"))
