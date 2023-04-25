@@ -29,4 +29,6 @@ for (i in 1:length(close_data)) {
 }
 
 # Convert to data frame
-amzn <- as.data.frame(t(rbind(date, close_data)))
+amzn <- t(rbind(date, close_data))
+
+
