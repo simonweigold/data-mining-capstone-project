@@ -24,3 +24,6 @@ guardian_amazon <- import(here::here("guardian_amazon.csv"))
 # Reduce data to minimum amount of variables
 ga_clean <- guardian_amazon %>% 
   select(web_title, headline, first_publication_date, body_text)
+
+# Introduce NAs
+ga_clean$body_text[ga_clean$body_text == ""] <- "NA"
