@@ -1,0 +1,32 @@
+---
+title: 'Data Mining using R: Capstone Project'
+author: "Simon Weigold"
+date: "`r Sys.Date()`"
+output: html_document
+fontsize: 12pt
+geometry: "left=3cm, right=3cm, top=3cm, bottom=3cm"
+header-includes:
+  \usepackage{fvextra}
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction and theoretical framework
+
+- stock market and listing of private companies.
+- mass communication about listed companies and news in particular
+- sentiment analysis and stock performance
+
+# Methodology
+
+- Data collection
+- Sentiment Analysis using Vader
+- Correlation metric
+
+# Results and Conclusion
+
+- What can we learn from this analysis?
+
