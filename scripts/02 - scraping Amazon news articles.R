@@ -2,6 +2,7 @@ library(tidyverse)
 library(here)
 library(guardianapi)
 library(rio)
+library(stringi)
 
 # Data retrieval----
 # Load API key
@@ -23,13 +24,9 @@ guardian_amazon <- import(here::here("guardian_amazon.csv"))
 
 # Reduce data to minimum amount of variables
 ga_clean <- guardian_amazon %>% 
-  select(web_title, headline, web_publication_date, body_text)
-
-# Introduce NAs
-ga_clean$body_text[ga_clean$body_text == ""] <- "NA"
+  select(web_title, headline, web_publication_date)
 
 # Convert text to UTF-8
-Encoding(ga_clean$body_text) <- "UTF-8"
 Encoding(ga_clean$headline) <- "UTF-8"
 
 # Save clean data
