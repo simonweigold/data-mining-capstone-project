@@ -28,5 +28,9 @@ ga_clean <- guardian_amazon %>%
 # Introduce NAs
 ga_clean$body_text[ga_clean$body_text == ""] <- "NA"
 
+# Convert text to UTF-8
+Encoding(ga_clean$body_text) <- "UTF-8"
+Encoding(ga_clean$headline) <- "UTF-8"
+
 # Save clean data
 write.csv(ga_clean, here::here("ga_clean.csv"))
