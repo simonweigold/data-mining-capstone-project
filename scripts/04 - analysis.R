@@ -68,3 +68,12 @@ stock %>%
   )
 
 # Merge stock values and sentiment scores for dates
+# Create stock df for merging
+stock_join <- stock %>%
+  filter(date >= '2000-01-01' & date <= '2022-12-31') %>%
+  select(date, value)
+# Set variable "date" to same type for both dfs
+df_means_VADER$date <- as.Date(df_means_VADER$date)
+stock_join$date <- as.Date(stock_join$date)
+# Create df
+df <- right_join(df_means_VADER, stock_join)
