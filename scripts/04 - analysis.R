@@ -103,3 +103,5 @@ df %>%
         text = element_text(color="black", size=14, family="serif")
   )
 
+# Calculate correlation between stock value and sentiment score
+cor(df$mean_compound, df$value, use="complete.obs")
