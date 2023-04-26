@@ -77,3 +77,29 @@ df_means_VADER$date <- as.Date(df_means_VADER$date)
 stock_join$date <- as.Date(stock_join$date)
 # Create df
 df <- right_join(df_means_VADER, stock_join)
+
+# Visualisation of stock and sentiment data over time
+df %>% 
+  ggplot() +
+  geom_line(aes(x=date, y=mean_compound), col="dodgerblue") +
+  geom_line(aes(x=date, y=value/max(value)), col="dodgerblue4") +
+  xlab("Date") +
+  ylab("Value") +
+  scale_x_date(date_minor_breaks = "1 day") +
+  theme(axis.text = element_text(color="black", size=12, family="serif"),
+        axis.text.x = element_text(color="black", size=12, family="serif"),
+        axis.ticks.x = element_line(),
+        axis.ticks.y = element_line(),
+        axis.line.x = element_line(size=0.5, color="grey"),
+        axis.line.y = element_line(size=0.5, color="grey"),
+        panel.grid = element_line(color = "honeydew2",
+                                  size = 0.5,
+                                  linetype = 1),
+        panel.background = element_rect(fill="white"),
+        plot.margin = margin(10,10,10,10),
+        plot.title = element_text(color="black", size=16, family="serif"),
+        plot.subtitle = element_text(color="grey26", size=14, family="serif"),
+        legend.text = element_text(color="black", size=12, family="serif"),
+        text = element_text(color="black", size=14, family="serif")
+  )
+
