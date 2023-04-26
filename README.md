@@ -3,10 +3,11 @@ This is the capstone project for the seminar "Data Mining using R" at the Univer
 
 ## To-Do list
 - [x] Set up Github project and link to RStudio
-- [ ] Scraping
+- [x] Scraping
   - [x] Amazon stock data
-  - [ ] News articles about Amazon
+  - [x] News articles about Amazon
 - [ ] Perform analyses
-  - [ ] Sentiment analysis of news articles
+  - [x] Sentiment analysis of news headlines
   - [ ] Correlation of Sentiment scores and stock performance
+  - [ ] Visualisations
 - [ ] Create Report
