@@ -6,8 +6,12 @@ This is the capstone project for the seminar "Data Mining using R" at the Univer
 - [x] Scraping
   - [x] Amazon stock data
   - [x] News articles about Amazon
-- [ ] Perform analyses
+- [x] Perform analyses
   - [x] Sentiment analysis of news headlines
-  - [ ] Correlation of Sentiment scores and stock performance
-  - [ ] Visualisations
+  - [x] Correlation of Sentiment scores and stock performance
+  - [x] Visualisations
 - [ ] Create Report
+  - [x] Write Introduction and Theoretical Foundation
+  - [x] Write Methodology
+  - [ ] Write Results and Conclusion
+  - [ ] Finish up formatting and knit to HTML
