@@ -2,7 +2,6 @@ library(tidyverse)
 library(here)
 library(guardianapi)
 library(rio)
-library(stringi)
 
 # Data retrieval----
 # Load API key
