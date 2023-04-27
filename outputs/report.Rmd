@@ -4,17 +4,18 @@ author: "Simon Weigold"
 date: "`r Sys.Date()`"
 output: html_document
 fontsize: 12pt
-#geometry: "left=3cm, right=3cm, top=3cm, bottom=3cm"
+geometry: "left=3cm, right=3cm, top=3cm, bottom=3cm"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Introduction and theoretical framework
 <style>
 body {
 text-align: justify}
 </style>
+
+# Introduction and theoretical framework
 Predicting the stock market has been of great interest for researchers and business professionals likewise (Source, Source). The opportunities that come with investing in listed companies have created not only fascination for private investors but also professional career paths and whole industries (Source). The way the stock market works is that companies in certain instances decide to “go public” (Source), i.e. the company offers shares for sale to the public, and anyone who would like to participate can buy these shares. With the availability of many shares from a wide range of different companies the stock market developed: a place, where investors buy and sell shares of publicly traded companies (Source). The dynamics on the stock market are driven by the fluctuations of prices of stocks which can depend on factors such as companies’ performances, industry trends and overall market conditions (Source).  
 Since this dynamic establishes itself from an interchange between humans (executives at public companies, investors, financial advisors, just to name a few), communication can be expected to influence behaviours within this dynamic (Source). Mass communication in particular has a special role to play, as news channels such as newspapers, radio or television report on listed companies and thus create a certain image for the public's perception and opinion-forming (Source). News report on companies’ financial performances, changes in management, mergers and acquisitions and other relevant information that can affect the prices of stocks. It has been proven that investors form their perception of companies and stocks not only through metrics and balance sheets but also news publications. Ultimately, this influences the purchasing and selling behaviour of investors and therefore affects the stock price.  
 To analyse the correlation between news and stock performance, researchers have often used the tool of sentiment analysis in previous research projects (Source, Source). Sentiment analysis is a technique which can be used to identify positive, neutral, or negative opinions within a given text (Source). Usually, the analysed text comes from news articles, social media posts or customer reviews (Source). To analyse sentiments in the context of stock performance, Twitter data has been studied for instance (Source). To understand the effect of more traditional types of mass media, it may also be useful to analyse news articles and/or their headlines. Thus, this research project aims to answer the following research question:  
@@ -23,7 +24,7 @@ Since previous empirical evidence demonstrates significant relationships between
 *There is a correlation between the sentiment of news headlines of articles about Amazon from the Guardian and the stock performance of the company Amazon.*  
 
 # Methodology
-Before starting with the collection of data, all used packages are loaded now. Note, that to succesfully execute the Python code chunk, Python needs to be installed on the used device.
+Before starting with the collection of data, all used packages are loaded now. Note, that to successfully execute the Python code chunk, Python needs to be installed on the used device. Note that if not set up within RStudio yet, the libraries "os", "nltk" and "pandas" likely require installation.
 ```{r}
 library(tidyverse)
 library(rio)
@@ -33,10 +34,17 @@ library(httr)
 library(rstudioapi)
 library(guardianapi)
 ```
+```{python}
+import os
+import nltk
+nltk.download('vader_lexicon')
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import pandas as pd
+```
 
 Once all packages have been loaded, the next step is the data collection. This research project analyses the stock data of Amazon and news headlines from The Guardian. First, the stock data is being retrieved.  
 For this, the API by Alpha Vantage (2023) is used. After requesting an API key, the stock ticker of the company, which stock data shall be retrieved needs to be added to a predefined query URL.
-```{r, eval = F}
+```{r}
 # Claim API key for access to stock data
 browseURL("https://www.alphavantage.co/support/#api-key")
 
@@ -49,14 +57,14 @@ request_url <- str_c("https://www.alphavantage.co/query?function=TIME_SERIES_DAI
 ```
 
 This query URL can then be used to send a GET request to the API and save the data on the local machine by using the "content" function of the "httr" package.
-```{r, eval = F}
+```{r}
 # Request data from API
 amzn_get <- httr::GET(request_url)
 amzn_content <- httr::content(amzn_get)
 ```
 
 After receiving a variety of data for the Amazon stock, it is decided to use the closing price, since it is the most commonly used indicator for evaluating a stock's performance. This specific metric is extracted from the content file with the help of a for loop, which iterates through the list element of the exisiting file. In addition, the same procedure is used for the date of each data point. This creates two lists, which are transformed into a data frame, so that both date and closing data coexist in the respective row of the data frame. Finally, the data frame is stored in the working directory, to save the progress of work and use the data in further analysis steps.
-```{r, eval = F}
+```{r}
 # Extract data
 close_data <- vector(mode = "list", length = length(amzn_content$`Time Series (Daily)`))
 date <- vector(mode = "list", length = length(amzn_content$`Time Series (Daily)`))
@@ -83,7 +91,7 @@ write.csv(amzn, here::here("amzn.csv"))
 ```
 
 In order to collect news headlines for the sentiment analysis, data from a news source needs to be collected. The Guardian offers an API which enables developers and researchers to collect articles and respective data from over 2 million pieces of content (The Guardian, 2023). For R users, a package called "guardianapi" has been developed, which offers wrapper functions for easy access to the API by The Guardian. After registering on The Guardian Website for an API key, it can be stored into R and used to gain access to the data. For the request, the query term and time period are specified.
-```{r, eval = F}
+```{r}
 # Request API key
 browseURL("https://bonobo.capi.gutools.co.uk/register/developer")
 
@@ -97,7 +105,7 @@ api_request <- gu_content(query = "amazon",
 ```
 
 The wrapper function already returns an object of the type data frame, which means that there is no need to parse any data. To facilitate the further analysis steps, only relevant variables are selected and encoded to UTF-8. Subsequently the data is stored on the working directory to use it for the further analyses.
-```{r, eval = F}
+```{r}
 # Save data as data frame
 df <- api_request %>% select(-tags)
 df <- as.data.frame(df)
@@ -115,9 +123,31 @@ write.csv(ga_clean, here::here("ga_clean.csv"))
 
 After collecting all data from the APIs, the first analysis can be conducted: a sentiment analysis using the Valence Aware Dictionary for Sentiment Reasoning (VADER). VADER is a part of the Natural Language Processing Toolkit (NLTK), a Python library. It is a lexicon-based approach for detecting sentiments in a given text. Although it is optimised for social media posts, it can be expected to function sufficiently on news headlines, since it assigns predefined values for connotations of language terms.  
 Here, the polarity scores are calculated into a newly created variable, which is then used to extract the compound, a single metric ranging from -1 to 1, which summaries the overall sentiment within one single headline. Finally, a categorisation into positive, neutral and negative is implemented, using the borders of 0.05 and -0,05, as suggested by Xiang et al. (2021).  
-Note: to avoid issues with running Python and Python libraries, the code for the conduction of the sentiment analysis is not activated in this markdown. Later, the output from the sentiment analysis is importet as a CSV.
-```{r, eval = F}
-source("03 - sentiment analysis of news articles.py")
+```{python}
+sid = SentimentIntensityAnalyzer()
+
+# Import data
+df = pd.read_csv(os.path.join(os.getcwd(), "ga_clean.csv"))
+
+# Calculate scores
+df['scores'] = df['headline'].apply(lambda review: sid.polarity_scores(review))
+
+df['compound']  = df['scores'].apply(lambda score_dict: score_dict['compound'])
+
+def categorize(value):
+    if value >= 0.05:
+        return 'pos'
+    elif value <= -0.05:
+        return 'neg'
+    else:
+        return 'neu'
+df['comp_score'] = df['compound'].apply(categorize)
+
+# Show head of results
+print(df.head())
+
+# Export csv
+df.to_csv(os.path.join(os.getcwd(), "ga_clean_VADER2.csv"), index = False)
 ```
 
 After calculating the sentiment metrics, a visualisation can be made to visually examine the patterns within the data. First, a theme is set for the graphical layout:
