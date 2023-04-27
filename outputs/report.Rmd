@@ -4,21 +4,24 @@ author: "Simon Weigold"
 date: "`r Sys.Date()`"
 output: html_document
 fontsize: 12pt
-geometry: "left=3cm, right=3cm, top=3cm, bottom=3cm"
-header-includes:
-  \usepackage{fvextra}
-  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+#geometry: "left=3cm, right=3cm, top=3cm, bottom=3cm"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 # Introduction and theoretical framework
+<style>
+body {
+text-align: justify}
+</style>
+Predicting the stock market has been of great interest for researchers and business professionals likewise (Source, Source). The opportunities that come with investing in listed companies have created not only fascination for private investors but also professional career paths and whole industries (Source). The way the stock market works is that companies in certain instances decide to “go public” (Source), i.e. the company offers shares for sale to the public, and anyone who would like to participate can buy these shares. With the availability of many shares from a wide range of different companies the stock market developed: a place, where investors buy and sell shares of publicly traded companies (Source). The dynamics on the stock market are driven by the fluctuations of prices of stocks which can depend on factors such as companies’ performances, industry trends and overall market conditions (Source).  
+Since this dynamic establishes itself from an interchange between humans (executives at public companies, investors, financial advisors, just to name a few), communication can be expected to influence behaviours within this dynamic (Source). Mass communication in particular has a special role to play, as news channels such as newspapers, radio or television report on listed companies and thus create a certain image for the public's perception and opinion-forming (Source). News report on companies’ financial performances, changes in management, mergers and acquisitions and other relevant information that can affect the prices of stocks. It has been proven that investors form their perception of companies and stocks not only through metrics and balance sheets but also news publications. Ultimately, this influences the purchasing and selling behaviour of investors and therefore affects the stock price.  
+To analyse the correlation between news and stock performance, researchers have often used the tool of sentiment analysis in previous research projects (Source, Source). Sentiment analysis is a technique which can be used to identify positive, neutral, or negative opinions within a given text (Source). Usually, the analysed text comes from news articles, social media posts or customer reviews (Source). To analyse sentiments in the context of stock performance, Twitter data has been studied for instance (Source). To understand the effect of more traditional types of mass media, it may also be useful to analyse news articles and/or their headlines. Thus, this research project aims to answer the following research question:  
+*To what extent do the stock performance of the company Amazon and the sentiment of news headlines of articles about Amazon from The Guardian correlate?*  
+Since previous empirical evidence demonstrates significant relationships between mass media sentiments and stock performance, the following hypothesis is established:  
+*There is a correlation between the sentiment of news headlines of articles about Amazon from the Guardian and the stock performance of the company Amazon.*  
 
-- stock market and listing of private companies.
-- mass communication about listed companies and news in particular
-- sentiment analysis and stock performance
 
 # Methodology
 
