@@ -27,4 +27,4 @@ df['comp_score'] = df['compound'].apply(categorize)
 print(df.head())
 
 # Export csv
-df.to_csv(os.path.join(os.getcwd(), "ga_clean_VADER2.csv"), index = False)
+df.to_csv(os.path.join(os.getcwd(), "ga_clean_VADER.csv"), index = False)
