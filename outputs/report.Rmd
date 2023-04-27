@@ -22,10 +22,70 @@ To analyse the correlation between news and stock performance, researchers have 
 Since previous empirical evidence demonstrates significant relationships between mass media sentiments and stock performance, the following hypothesis is established:  
 *There is a correlation between the sentiment of news headlines of articles about Amazon from the Guardian and the stock performance of the company Amazon.*  
 
-
 # Methodology
+Before starting with the collection of data, all used packages are loaded now. Note, that to succesfully execute the Python code chunk, Python needs to be installed on the used device.
+```{r}
+library(tidyverse)
+library(httr)
+library(here)
+library(rstudioapi)
+library(lubridate)
+library(guardianapi)
+```
+```{python}
+import os
+#nltk.download('vader_lexicon')
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import pandas as pd
+```
 
-- Data collection
+Once all packages have been loaded, the next step is the data collection. This research project analyses the stock data of Amazon and news headlines from The Guardian. First, the stock data is being retrieved.  
+
+```{r}
+# Claim API key for access to stock data
+browseURL("https://www.alphavantage.co/support/#api-key")
+
+# Set API key and request URL
+api_key <- rstudioapi::askForPassword()
+request_url <- str_c("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=",
+                     "AMZN",
+                     "&outputsize=full&apikey=",
+                     api_key)
+```
+
+```{r}
+# Request data from API
+amzn_get <- httr::GET(request_url)
+amzn_content <- httr::content(amzn_get)
+```
+
+```{r}
+# Extract data
+close_data <- vector(mode = "list", length = length(amzn_content$`Time Series (Daily)`))
+date <- vector(mode = "list", length = length(amzn_content$`Time Series (Daily)`))
+for (i in 1:length(close_data)) {
+  close_data[i] <- amzn_content$`Time Series (Daily)`[[i]]$`4. close`
+  date[i] <- names(amzn_content$`Time Series (Daily)`[i])
+}
+
+# Convert to data frame
+matrix <- matrix(nrow = length(date), ncol = 2, byrow = T)
+for (j in 1:length(date)) {
+  matrix[j,] <- c(date[[j]],
+                  close_data[[j]])
+}
+amzn <- as.data.frame(matrix)
+
+# Enhance data frame
+colnames(amzn) <- c("date", "close_data")
+amzn$date <- as.Date(amzn$date)
+amzn$close_data <- as.integer(amzn$close_data)
+
+# Save as csv
+write.csv(amzn, here::here("amzn.csv"))
+```
+
+
 - Sentiment Analysis using Vader
 - Correlation metric
 
@@ -33,3 +93,21 @@ Since previous empirical evidence demonstrates significant relationships between
 
 - What can we learn from this analysis?
 
+# Literature
+
+```{r word_count, echo=FALSE, results='asis'}
+# Read the RMarkdown file
+rmd_file <- "Report.Rmd"
+rmd_content <- readLines(rmd_file)
+# Function to check if a line is a code chunk
+is_code_chunk <- function(line) {
+  grepl("```\\{r.*\\}", line) || grepl("^````", line)
+}
+# Extract text without code chunks
+chunk_tags <- map_lgl(rmd_content, is_code_chunk)
+in_chunk <- cumsum(chunk_tags) %% 2 == 1
+rmd_no_code_chunks <- rmd_content[!in_chunk & !chunk_tags]
+# Count words
+word_count <- sum(str_count(rmd_no_code_chunks, "\\S+"))
+cat(paste0("Anzahl Wörter: ", word_count))
+```
