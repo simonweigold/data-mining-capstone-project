@@ -1,6 +1,9 @@
 # Data Mining using R: Capstone project
 This is the capstone project for the seminar "Data Mining using R" at the University of Lucerne in the Spring Term 2023.
 
+## How to navigate
+*add short explanation of files/scripts*
+
 ## To-Do list
 - [x] Set up Github project and link to RStudio
 - [x] Scraping
