@@ -73,11 +73,16 @@ df %>%
   geom_line(aes(x=date, y=mean_compound), col="dodgerblue") +
   geom_line(aes(x=date, y=value/max(value)), col="dodgerblue4") +
   xlab("Date") +
-  ylab("Value") +
+  ylab("Sentiment and Value") +
   scale_x_date(date_minor_breaks = "1 day") +
   custom_theme
 
-# Calculate correlation between stock value and sentiment score
-cor.test(df$mean_compound, df$value, use="complete.obs")
+# Visualise and calculate correlation between stock value and sentiment score
+df %>% 
+  ggplot() +
+  geom_point(aes(x=mean_compound, y=value, col = date)) +
+  xlab("Sentiment Score") +
+  ylab("Value") +
+  custom_theme
 
-plot(df$mean_compound, df$value)
+cor.test(df$mean_compound, df$value, use="complete.obs")
