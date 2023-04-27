@@ -40,7 +40,7 @@ import pandas as pd
 ```
 
 Once all packages have been loaded, the next step is the data collection. This research project analyses the stock data of Amazon and news headlines from The Guardian. First, the stock data is being retrieved.  
-
+For this, the API by Alpha Vantage (2023) is used. After requesting an API key, the stock ticker of the company, which stock data shall be retrieved needs to be added to a predefined query URL.
 ```{r}
 # Claim API key for access to stock data
 browseURL("https://www.alphavantage.co/support/#api-key")
@@ -53,12 +53,14 @@ request_url <- str_c("https://www.alphavantage.co/query?function=TIME_SERIES_DAI
                      api_key)
 ```
 
+This query URL can then be used to send a GET request to the API and save the data on the local machine by using the "content" function of the "httr" package.
 ```{r}
 # Request data from API
 amzn_get <- httr::GET(request_url)
 amzn_content <- httr::content(amzn_get)
 ```
 
+After receiving a variety of data for the Amazon stock, it is decided to use the closing price, since it is the most commonly used indicator for evaluating a stock's performance. This specific metric is extracted from the content file with the help of a for loop, which iterates through the list element of the exisiting file. In addition, the same procedure is used for the date of each data point. This creates two lists, which are transformed into a data frame, so that both date and closing data coexist in the respective row of the data frame. Finally, the data frame is stored in the working directory, to save the progress of work and use the data in further analysis steps.
 ```{r}
 # Extract data
 close_data <- vector(mode = "list", length = length(amzn_content$`Time Series (Daily)`))
@@ -85,6 +87,36 @@ amzn$close_data <- as.integer(amzn$close_data)
 write.csv(amzn, here::here("amzn.csv"))
 ```
 
+In order to collect news headlines for the sentiment analysis, data from a news source needs to be collected. The Guardian offers an API which enables developers and researchers to collect articles and respective data from over 2 million pieces of content (The Guardian, 2023). For R users, a package called "guardianapi" has been developed, which offers wrapper functions for easy access to the API by The Guardian. After registering on The Guardian Website for an API key, it can be stored into R and used to gain access to the data. For the request, the query term and time period are specified.
+```{r}
+# Request API key
+browseURL("https://bonobo.capi.gutools.co.uk/register/developer")
+
+# Load API key
+gu_api_key()
+
+# GET request
+api_request <- gu_content(query = "amazon",
+                          from_date = "2000-01-01",
+                          to_date = "2022-12-31")
+```
+
+The wrapper function already returns an object of the type data frame, which means that there is no need to parse any data. To facilitate the further analysis steps, only relevant variables are selected and encoded to UTF-8. Subsequently the data is stored on the working directory to use it for the further analyses.
+```{r}
+# Save data as data frame
+df <- api_request %>% select(-tags)
+df <- as.data.frame(df)
+
+# Reduce data to minimum amount of variables
+ga_clean <- df %>% 
+  select(web_title, headline, web_publication_date)
+
+# Convert text to UTF-8
+Encoding(ga_clean$headline) <- "UTF-8"
+
+# Save clean data
+write.csv(ga_clean, here::here("ga_clean.csv"))
+```
 
 - Sentiment Analysis using Vader
 - Correlation metric
@@ -94,6 +126,9 @@ write.csv(amzn, here::here("amzn.csv"))
 - What can we learn from this analysis?
 
 # Literature
+- *Alpha Vantage* (2023) 'Stock Market API'. Available at: https://www.alphavantage.co/.
+- *The Guardian* (2023) 'Award-winning journalism Open to everyone'. Available at: https://open-platform.theguardian.com/.
+
 
 ```{r word_count, echo=FALSE, results='asis'}
 # Read the RMarkdown file
