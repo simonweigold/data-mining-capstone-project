@@ -2,7 +2,7 @@
 This is the capstone project for the seminar "Data Mining using R" at the University of Lucerne in the Spring Term 2023.
 
 ## How to navigate
-*add short explanation of files/scripts*
+To fully execute all steps of this project, the scripts can be used in chronological order. The report in the outputs-folder sums up the main findings and offers some contextualisation. In order for the report.Rmd to succesfully knit, some files from previous scripts need to exist. To look at the report without knitting, please refer to the HTML file provided in the same folder.
 
 ## To-Do list
 - [x] Set up Github project and link to RStudio
@@ -13,8 +13,8 @@ This is the capstone project for the seminar "Data Mining using R" at the Univer
   - [x] Sentiment analysis of news headlines
   - [x] Correlation of Sentiment scores and stock performance
   - [x] Visualisations
-- [ ] Create Report
+- [x] Create Report
   - [x] Write Introduction and Theoretical Foundation
   - [x] Write Methodology
-  - [ ] Write Results and Conclusion
-  - [ ] Finish up formatting and knit to HTML
+  - [x] Write Results and Conclusion
+  - [x] Finish up formatting and knit to HTML
