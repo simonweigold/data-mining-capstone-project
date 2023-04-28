@@ -1,5 +1,6 @@
 ---
 title: 'Data Mining using R: Capstone Project'
+subtitle: 'News sentiments and stock performance\: the case of Amazon.com' 
 author: "Simon Weigold"
 date: "`r Sys.Date()`"
 output: html_document
@@ -68,7 +69,6 @@ The visual examination of the correlation between stock performance and sentimen
 To fully understand why the results of this research project do not align with previous empirical work, some further analyses should be made. For instance, it might be possible that the VADER sentiment analysis is not the ideal tool for analysing news headlines. Sousa et al. (2019) for instance used the transformer based language model BERT to examine a similar type of data and issue. Contextually it might also be possible that other news publishers would be more suitable to analyse correlations with stock data. News articles which specialise on financial issues for instance could perhaps show a bigger relationship towards the stock performance of a certain company. Finally, it would be interesting to analyse the contents of the news coverage of the company Amazon more in detail, to get a better understanding of reasons why sentiments of news headlines from news about Amazon from The Guardian do not correlate with the stock performance of the company.
 
 # Literature
-
 -   *Alpha Vantage* (2023) 'Stock Market API'. Available at: <https://www.alphavantage.co/>.
 -   Amadeo, K. (2022) "Pros and Cons of Investing in Stocks," The Balance [Preprint]. Available at: <https://www.thebalancemoney.com/stock-investing-for-the-individual-investor-3306182>.
 -   Argan, M., Sevil, G., & Yalama, A. (2014). The effect of word-of-mouth communication on stock holdings and trades: Empirical evidence from an emerging market. Journal of Behavioral Finance, 15(2), 89-98.
