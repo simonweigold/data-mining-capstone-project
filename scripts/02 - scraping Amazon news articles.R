@@ -8,7 +8,7 @@ library(rio)
 gu_api_key()
 
 # GET request
-api_request <- gu_content(query = "amazon",
+api_request <- gu_content(query = "Amazon.com",
                           from_date = "2000-01-01",
                           to_date = "2022-12-31")
 
