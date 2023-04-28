@@ -162,6 +162,11 @@ print(df.head())
 df.to_csv(os.path.join(os.getcwd(), "ga_clean_VADER2.csv"), index = False)
 ```
 
+The distribution of sentiments can be found in the following table:
+```{r}
+table(VADER$comp_score)
+```
+
 After calculating the sentiment metrics, a visualisation can be made to visually examine the patterns within the data. First, a theme is set for the graphical layout:
 
 ```{r}
