@@ -44,7 +44,7 @@ a <- df_means_VADER %>%
   custom_theme
 ggsave(a,
        filename = "sentiment-per-day.png",
-       path = here::here("outputs"),
+       path = here::here("figures"),
        device = "png",
        width = 6, height = 4, units = "in",
        dpi = 600
@@ -63,7 +63,7 @@ b <- stock %>%
   custom_theme
 ggsave(b,
        filename = "stock-value-per-day.png",
-       path = here::here("outputs"),
+       path = here::here("figures"),
        device = "png",
        width = 6, height = 4, units = "in",
        dpi = 600
@@ -92,7 +92,7 @@ c <- df %>%
   custom_theme
 ggsave(c,
        filename = "stock-and-sentiment-per-day.png",
-       path = here::here("outputs"),
+       path = here::here("figures"),
        device = "png",
        width = 6, height = 4, units = "in",
        dpi = 600
@@ -106,7 +106,7 @@ d <- df %>%
   custom_theme
 ggsave(d,
        filename = "stock-and-sentiment-correlation.png",
-       path = here::here("outputs"),
+       path = here::here("figures"),
        device = "png",
        width = 6, height = 4, units = "in",
        dpi = 600
