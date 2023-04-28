@@ -34,8 +34,9 @@ In order to collect news headlines for the sentiment analysis, data from a news 
 The wrapper function already returns an object of the type data frame, which means that there is no need to parse any data. To facilitate the further analysis steps, only relevant variables are selected and encoded to UTF-8. Subsequently the data is stored on the working directory to use it for the further analyses.  
 After collecting all data from the APIs, the first analysis can be conducted: a sentiment analysis using the Valence Aware Dictionary for Sentiment Reasoning (VADER). VADER is a part of the Natural Language Processing Toolkit (NLTK), a Python library. It is a lexicon-based approach for detecting sentiments in a given text. Although it is optimised for social media posts, it can be expected to function sufficiently on news headlines, since it assigns predefined values for connotations of language terms.  
 Here, the polarity scores are calculated into a newly created variable, which is then used to extract the compound, a single metric ranging from -1 to 1, which summaries the overall sentiment within one single headline. Finally, a categorisation into positive, neutral and negative is implemented, using the borders of 0.05 and -0,05, as suggested by Xiang et al. (2021).  
-The distribution of sentiments can be found in the following table:
+The distribution of sentiments can be found in the following table:  
 ```{r}
+library(rio)
 VADER <- import(here::here("ga_clean_VADER.csv"))
 table(VADER$comp_score)
 ```
@@ -48,13 +49,13 @@ To get a grasp of the two variables at interest (stock performance, sentiment sc
 4. for the stock data, a slightly bigger time period is covered. Therefore, the time range is reduced to the available period in the news data.  
 5. making sure, both date variables match the data type "Date".  
 6. merge stock data and sentiment values.  
-Since the sentiment score ranges from -1 to 1, the stock data is displayed as a proportion of its maximal value (percentage). Thus, the visualisation also ranges from -1 to 1.
-![Figure 1: Stock performance and sentiment score per day.](../outputs/stock-and-sentiment-per-day.png)
+Since the sentiment score ranges from -1 to 1, the stock data is displayed as a proportion of its maximal value (percentage). Thus, the visualisation also ranges from -1 to 1.  
+![Figure 1: Stock performance and sentiment score per day.](../figures/stock-and-sentiment-per-day.png)
 
 Subsequently, the correlation between stock performance and sentiment score is to be calculated. First, a scatter plot is created to visually examine the relationship between the two variables. As a third variable, date is kept but only shown as a gradient change of color.  
-![Figure 1: Stock performance and sentiment score correlation.](../outputs/stock-and-sentiment-correlation.png)
+![Figure 1: Stock performance and sentiment score correlation.](../figures/stock-and-sentiment-correlation.png)
 
-To calculate the correlation, Pearson's R is used as a metric since it allows the inclusion of two continuous variables:
+To calculate the correlation, Pearson's R is used as a metric since it allows the inclusion of two continuous variables:  
 
 ```{r}
 df <- import(here::here("final_df.csv"))
