@@ -27,190 +27,37 @@ Since previous empirical evidence demonstrates significant relationships between
 *There is a correlation between the sentiment of news headlines of articles about Amazon from the Guardian and the stock performance of the company Amazon.*
 
 # Methodology
-
-Before starting with the collection of data, all used packages are loaded now.
-```{r}
-library(tidyverse)
-library(rio)
-library(here)
-library(lubridate)
-library(httr)
-library(rstudioapi)
-library(guardianapi)
-```
-
-Once all packages have been loaded, the next step is the data collection. This research project analyses the stock data of Amazon and news headlines from The Guardian. First, the stock data is being retrieved.\
-For this, the API by Alpha Vantage (2023) is used. After requesting an API key, the stock ticker of the company, which stock data shall be retrieved needs to be added to a predefined query URL.
-```{r}
-# Claim API key for access to stock data
-browseURL("https://www.alphavantage.co/support/#api-key")
-
-# Set API key and request URL
-api_key <- rstudioapi::askForPassword()
-request_url <- str_c("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=",
-                     "AMZN",
-                     "&outputsize=full&apikey=",
-                     api_key)
-```
-
-This query URL can then be used to send a GET request to the API and save the data on the local machine by using the "content" function of the "httr" package.
-```{r}
-# Request data from API
-amzn_get <- httr::GET(request_url)
-amzn_content <- httr::content(amzn_get)
-```
-
-After receiving a variety of data for the Amazon stock, it is decided to use the closing price, since it is the most commonly used indicator for evaluating a stock's performance. This specific metric is extracted from the content file with the help of a for loop, which iterates through the list element of the exisiting file. In addition, the same procedure is used for the date of each data point. This creates two lists, which are transformed into a data frame, so that both date and closing data coexist in the respective row of the data frame. Finally, the data frame is stored in the working directory, to save the progress of work and use the data in further analysis steps.
-```{r}
-# Extract data
-close_data <- vector(mode = "list", length = length(amzn_content$`Time Series (Daily)`))
-date <- vector(mode = "list", length = length(amzn_content$`Time Series (Daily)`))
-for (i in 1:length(close_data)) {
-  close_data[i] <- amzn_content$`Time Series (Daily)`[[i]]$`4. close`
-  date[i] <- names(amzn_content$`Time Series (Daily)`[i])
-}
-
-# Convert to data frame
-matrix <- matrix(nrow = length(date), ncol = 2, byrow = T)
-for (j in 1:length(date)) {
-  matrix[j,] <- c(date[[j]],
-                  close_data[[j]])
-}
-amzn <- as.data.frame(matrix)
-
-# Enhance data frame
-colnames(amzn) <- c("date", "close_data")
-amzn$date <- as.Date(amzn$date)
-amzn$close_data <- as.integer(amzn$close_data)
-
-# Save as csv
-write.csv(amzn, here::here("amzn.csv"))
-```
-
-In order to collect news headlines for the sentiment analysis, data from a news source needs to be collected. The Guardian offers an API which enables developers and researchers to collect articles and respective data from over 2 million pieces of content (The Guardian, 2023). For R users, a package called "guardianapi" has been developed, which offers wrapper functions for easy access to the API by The Guardian. After registering on The Guardian Website for an API key, it can be stored into R and used to gain access to the data. For the request, the query term and time period are specified.
-```{r}
-# Request API key
-browseURL("https://bonobo.capi.gutools.co.uk/register/developer")
-
-# Load API key
-gu_api_key()
-
-# GET request
-api_request <- gu_content(query = "Amazon.com",
-                          from_date = "2000-01-01",
-                          to_date = "2022-12-31")
-```
-
-The wrapper function already returns an object of the type data frame, which means that there is no need to parse any data. To facilitate the further analysis steps, only relevant variables are selected and encoded to UTF-8. Subsequently the data is stored on the working directory to use it for the further analyses.
-
-```{r}
-# Save data as data frame
-df <- api_request %>% select(-tags)
-df <- as.data.frame(df)
-
-# Reduce data to minimum amount of variables
-ga_clean <- df %>% 
-  select(web_title, headline, web_publication_date)
-
-# Convert text to UTF-8
-Encoding(ga_clean$headline) <- "UTF-8"
-
-# Save clean data
-write.csv(ga_clean, here::here("ga_clean.csv"))
-```
-After collecting all data from the APIs, the first analysis can be conducted: a sentiment analysis using the Valence Aware Dictionary for Sentiment Reasoning (VADER). VADER is a part of the Natural Language Processing Toolkit (NLTK), a Python library. It is a lexicon-based approach for detecting sentiments in a given text. Although it is optimised for social media posts, it can be expected to function sufficiently on news headlines, since it assigns predefined values for connotations of language terms.\
+The first step of this research project is the data collection. This project analyses the stock data of Amazon and news headlines from The Guardian. First, the stock data is being retrieved.  
+For this, the API by Alpha Vantage (2023) is used. After requesting an API key, the stock ticker of the company, which stock data shall be retrieved needs to be added to a predefined query URL. This query URL can then be used to send a GET request to the API and save the data on the local machine by using the "content" function of the "httr" package.  
+After receiving a variety of data for the Amazon stock, it is decided to use the closing price, since it is the most commonly used indicator for evaluating a stock's performance. This specific metric is extracted from the content file with the help of a for loop, which iterates through the list element of the exisiting file. In addition, the same procedure is used for the date of each data point. This creates two lists, which are transformed into a data frame, so that both date and closing data coexist in the respective row of the data frame. Finally, the data frame is stored in the working directory, to save the progress of work and use the data in further analysis steps.  
+In order to collect news headlines for the sentiment analysis, data from a news source needs to be collected. The Guardian offers an API which enables developers and researchers to collect articles and respective data from over 2 million pieces of content (The Guardian, 2023). For R users, a package called "guardianapi" has been developed, which offers wrapper functions for easy access to the API by The Guardian. After registering on The Guardian Website for an API key, it can be stored into R and used to gain access to the data. For the request, the query term and time period are specified.  
+The wrapper function already returns an object of the type data frame, which means that there is no need to parse any data. To facilitate the further analysis steps, only relevant variables are selected and encoded to UTF-8. Subsequently the data is stored on the working directory to use it for the further analyses.  
+After collecting all data from the APIs, the first analysis can be conducted: a sentiment analysis using the Valence Aware Dictionary for Sentiment Reasoning (VADER). VADER is a part of the Natural Language Processing Toolkit (NLTK), a Python library. It is a lexicon-based approach for detecting sentiments in a given text. Although it is optimised for social media posts, it can be expected to function sufficiently on news headlines, since it assigns predefined values for connotations of language terms.  
 Here, the polarity scores are calculated into a newly created variable, which is then used to extract the compound, a single metric ranging from -1 to 1, which summaries the overall sentiment within one single headline. Finally, a categorisation into positive, neutral and negative is implemented, using the borders of 0.05 and -0,05, as suggested by Xiang et al. (2021).  
-The VADER sentiment analysis was conducted using Python (see *scripts/03 - sentiment analysis of news articles.py*). To ensure the functionality of this markdown file, the ouput from the Python code is simply imported as a CSV.
-
-```{r}
-VADER <- import(here::here("ga_clean_VADER.csv"))
-```
-
 The distribution of sentiments can be found in the following table:
 ```{r}
+VADER <- import(here::here("ga_clean_VADER.csv"))
 table(VADER$comp_score)
 ```
 
-After calculating the sentiment metrics, a visualisation can be made to visually examine the patterns within the data. First, a theme is set for the graphical layout:
-```{r}
-custom_theme <-   theme(axis.text = element_text(color="black", size=12, family="serif"),
-                        axis.text.x = element_text(color="black", size=12, family="serif"),
-                        axis.ticks.x = element_line(),
-                        axis.ticks.y = element_line(),
-                        axis.line.x = element_line(size=0.5, color="grey"),
-                        axis.line.y = element_line(size=0.5, color="grey"),
-                        panel.grid = element_line(color = "honeydew2",
-                                                  size = 0.5,
-                                                  linetype = 1),
-                        panel.background = element_rect(fill="white"),
-                        plot.margin = margin(10,10,10,10),
-                        plot.title = element_text(color="black", size=16, family="serif"),
-                        plot.subtitle = element_text(color="grey26", size=14, family="serif"),
-                        legend.text = element_text(color="black", size=12, family="serif"),
-                        text = element_text(color="black", size=14, family="serif")
-                        )
-```
-
-To get a grasp of the two variables at interest (stock performance, sentiment score), they are inspected as a function over time. Before this, some data manipulation is necessary. The manipulation steps are the following:\
-1. change date variable in VADER to date format.\
-2. create a new data frame object which holds the average sentiment per day and not per news headline.\
-3. in June 2022, a stock split was conducted on the Amazon stock (Source). This means, that existing stocks were divided into several parts, resulting in a lower stock price while the company kept its overall value. To keep the data comparable, all stock values after June 2022 can be multiplied with 20.\
-4. for the stock data, a slightly bigger time period is covered. Therefore, the time range is reduced to the available period in the news data.\
-5. making sure, both date variables match the data type "Date".\
-6. merge stock data and sentiment values.\
+After calculating the sentiment metrics, a visualisation can be made to visually examine the patterns within the data.  
+To get a grasp of the two variables at interest (stock performance, sentiment score), they are inspected as a function over time. Before this, some data manipulation is necessary. The manipulation steps are the following:  
+1. change date variable in VADER to date format.  
+2. create a new data frame object which holds the average sentiment per day and not per news headline.  
+3. in June 2022, a stock split was conducted on the Amazon stock (Source). This means, that existing stocks were divided into several parts, resulting in a lower stock price while the company kept its overall value. To keep the data comparable, all stock values after June 2022 can be multiplied with 20.  
+4. for the stock data, a slightly bigger time period is covered. Therefore, the time range is reduced to the available period in the news data.  
+5. making sure, both date variables match the data type "Date".  
+6. merge stock data and sentiment values.  
 Since the sentiment score ranges from -1 to 1, the stock data is displayed as a proportion of its maximal value (percentage). Thus, the visualisation also ranges from -1 to 1.
+![Figure 1: Stock performance and sentiment score per day.](../outputs/stock-and-sentiment-per-day.png)
 
-```{r}
-# Prepare data
-# Change to Date format
-VADER$date <- as.Date(VADER$web_publication_date)
-
-# Calculate average sentiment per day
-df_means_VADER <- VADER %>%
-  group_by(date) %>%
-  summarize(mean_compound = mean(compound))
-
-# Correct stock data for stock split in June 2022
-amzn$value <- amzn$close_data
-amzn$value[amzn$date > '2022-06-03'] <- amzn$value*20
-
-# Merge stock values and sentiment scores for dates
-# Create stock df for merging
-amzn_join <- amzn %>%
-  filter(date >= '2000-01-01' & date <= '2022-12-31') %>%
-  select(date, value)
-# Set variable "date" to same type for both dfs
-df_means_VADER$date <- as.Date(df_means_VADER$date)
-amzn_join$date <- as.Date(amzn_join$date)
-# Create df
-df <- right_join(df_means_VADER, amzn_join)
-
-# Visualisation of stock and sentiment data over time
-df %>% 
-  ggplot() +
-  geom_point(aes(x=date, y=mean_compound), col="dodgerblue", size = 0.75) +
-  geom_line(aes(x=date, y=value/max(value)), col="dodgerblue4") +
-  xlab("Date") +
-  ylab("Value") +
-  scale_x_date(date_minor_breaks = "1 day") +
-  custom_theme
-```
-
-Subsequently, the correlation between stock performance and sentiment score is to be calculated. First, a scatter plot is created to visually examine the relationship between the two variables. As a third variable, date is kept but only shown as a gradient change of color.
-
-```{r}
-# Visualise correlation between stock value and sentiment score
-df %>% 
-  ggplot() +
-  geom_point(aes(x=mean_compound, y=value, col = date)) +
-  xlab("Sentiment Score") +
-  ylab("Value") +
-  custom_theme
-```
+Subsequently, the correlation between stock performance and sentiment score is to be calculated. First, a scatter plot is created to visually examine the relationship between the two variables. As a third variable, date is kept but only shown as a gradient change of color.  
+![Figure 1: Stock performance and sentiment score correlation.](../outputs/stock-and-sentiment-correlation.png)
 
 To calculate the correlation, Pearson's R is used as a metric since it allows the inclusion of two continuous variables:
 
 ```{r}
+df <- import(here::here("final_df.csv"))
 cor.test(df$mean_compound, df$value, use="complete.obs")
 ```
 
